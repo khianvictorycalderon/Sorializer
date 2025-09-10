@@ -14,51 +14,74 @@ interface InputSectionProps {
 type Arrangement = "desc" | "asc" | null;
 type SortingAlgorithm = "insertion" | "selection" | null;
 
+interface OutputSectionProps {
+    steps: React.ReactNode[];
+}
+
+function recursiveInsertionSort(array: string[], steps: React.ReactNode[], order: Arrangement, stepIndex: number) {
+  if (stepIndex == 1) {
+    steps.push(`${array[0]} | ${array.slice(1).join("   ")}`);
+  }
+}
+
 export default function OpSec() {
-  const [input, setInput] = useState<string>("");
-  const [arrangement, setArrangement] = useState<Arrangement>(null);
-  const [sortingAlgorithm, setSortingAlgorithm] = useState<SortingAlgorithm>(null);
-  const [error, setError] = useState<string | null>(null);
 
-  const handleArrange = () => {
-    // Validation
-    if (!input.trim()) {
-      setError("Input cannot be empty.");
-      return;
-    }
-    if (!arrangement) {
-      setError("Please select an arrangement.");
-      return;
-    }
-    if (!sortingAlgorithm) {
-      setError("Please select a sorting algorithm.");
-      return;
-    }
+    // Input section
+    const [input, setInput] = useState<string>("");
+    const [arrangement, setArrangement] = useState<Arrangement>(null);
+    const [sortingAlgorithm, setSortingAlgorithm] = useState<SortingAlgorithm>(null);
+    const [error, setError] = useState<string | null>(null);
 
-    // Clear error if validation passes
-    setError(null);
+    // Output section
+    const [steps, setSteps] = useState<React.ReactNode[]>([]);
 
-    // Placeholder for sorting logic
-    console.log("Input:", input);
-    console.log("Arrangement:", arrangement);
-    console.log("Algorithm:", sortingAlgorithm);
-  };
+    const handleArrange = () => {
+      // Validation
+      if (!input.trim()) {
+        setError("Input cannot be empty.");
+        return;
+      }
+      if (!arrangement) {
+        setError("Please select an arrangement.");
+        return;
+      }
+      if (!sortingAlgorithm) {
+        setError("Please select a sorting algorithm.");
+        return;
+      }
 
-  return (
-    <>
-      <InputSection
-        input={input}
-        arrangement={arrangement}
-        sortingAlgorithm={sortingAlgorithm}
-        setInput={setInput}
-        setArrangement={setArrangement}
-        setSortingAlgorithm={setSortingAlgorithm}
-        onArrange={handleArrange}
-        error={error}
-      />
-      <OutputSection />
-    </>
-  );
+      setError(null);
+
+      // Reset steps
+      const newSteps: React.ReactNode[] = [];
+
+      if (sortingAlgorithm === "insertion") {
+        const filteredInput = input
+          .replace(/[^0-9,]/g, "")
+          .split(",")
+          .filter((s) => s !== "");
+        recursiveInsertionSort(filteredInput, newSteps, arrangement, 1);
+      }
+
+      setSteps(newSteps); // <- important!
+    };
+
+
+    return (
+        <>
+          <InputSection
+              input={input}
+              arrangement={arrangement}
+              sortingAlgorithm={sortingAlgorithm}
+              setInput={setInput}
+              setArrangement={setArrangement}
+              setSortingAlgorithm={setSortingAlgorithm}
+              onArrange={handleArrange}
+              error={error}
+          />
+          <OutputSection steps={steps} />
+        </>
+    );
 }
 
 const InputSection = ({
@@ -82,7 +105,7 @@ const InputSection = ({
           type="text"
           className={`w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition
             ${error && !input.trim() ? "border-red-500 focus:ring-red-300" : "border-gray-300 focus:ring-blue-600 focus:border-blue-600"}`}
-          placeholder="7,1,A,8,10,C,..."
+          placeholder="7,1,9,8,10,2..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
@@ -155,11 +178,26 @@ const InputSection = ({
   );
 };
 
-const OutputSection = () => {
+const OutputSection = ({ steps }: OutputSectionProps) => {
   return (
     <div className="px-8 py-4">
         <div className="max-w-4xl mx-auto">
-            Output here...
+            {steps.length > 0 ? (
+                <>
+                    {steps.map((item, index) => (
+                        <div 
+                            className="bg-neutral-200 p-2 my-2 rounded-md overflow-x-auto" 
+                            key={`${item}-${index}`}
+                        >
+                            {index + 1}.{")"} {item}
+                        </div>
+                    ))}
+                </>
+            ) : (
+                <span>
+                    Output here...
+                </span>
+            )}
         </div>
     </div>
   );
