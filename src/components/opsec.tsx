@@ -138,9 +138,9 @@ export default function OpSec() {
 
       if (sortingAlgorithm === "insertion") {
         const filteredInput = input
-          .replace(/[^0-9,]/g, "")
-          .split(",")
-          .filter((s) => s !== "");
+        .replace(/[^0-9\-,]/g, "")
+        .split(",")
+        .filter((s) => s !== "");
         recursiveInsertionSort(filteredInput, newSteps, arrangement, 1);
       }
 
