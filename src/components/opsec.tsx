@@ -270,7 +270,7 @@ const InputSection = ({
         <div className="mt-4">
           <button
             onClick={onArrange}
-            className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-cyan-600 transition w-full cursor-pointer"
+            className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-400 transition w-full cursor-pointer"
           >
             Arrange
           </button>
