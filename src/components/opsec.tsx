@@ -188,7 +188,29 @@ const InputSection = ({
             ${error && !input.trim() ? "border-red-500 focus:ring-red-300" : "border-gray-300 focus:ring-blue-600 focus:border-blue-600"}`}
           placeholder="7,1,9,8,10,2..."
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => {
+            let value = e.target.value;
+
+            // Allow only digits, commas, and minus signs
+            value = value.replace(/[^0-9\-,]/g, "");
+
+            // Prevent multiple commas in a row
+            value = value.replace(/,{2,}/g, ",");
+
+            // Prevent multiple minus signs and enforce minus only at start of number
+            value = value
+              .split(",")
+              .map((part) => {
+                // Keep only first "-" if at the start
+                if (part.startsWith("-")) {
+                  return "-" + part.slice(1).replace(/-/g, "");
+                }
+                return part.replace(/-/g, "");
+              })
+              .join(",");
+
+            setInput(value);
+          }}
         />
 
         <div className="flex flex-col lg:flex-row gap-4">
