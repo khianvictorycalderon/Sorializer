@@ -1,5 +1,20 @@
 type Arrangement = "desc" | "asc" | null;
 
+function getComparableValue(val: string): number {
+  // If it's a number
+  if (!isNaN(Number(val))) {
+    return Number(val);
+  }
+
+  // If it's a single letter A-Z
+  if (/^[A-Z]$/.test(val)) {
+    return val.charCodeAt(0) - 64; // A=1, B=2, ..., Z=26
+  }
+
+  // Fallback for invalid cases
+  return Number.MAX_SAFE_INTEGER;
+}
+
 export default function recursiveInsertionSort(
   array: string[],
   steps: React.ReactNode[],
@@ -56,8 +71,8 @@ export default function recursiveInsertionSort(
   }
 
   // Compare and swap if needed based on order
-  const current = Number(array[j + 1]);
-  const previous = Number(array[j]);
+  const current = getComparableValue(array[j + 1]);
+  const previous = getComparableValue(array[j]);
 
   let shouldSwap = false;
   if (order === "asc" && previous > current) {

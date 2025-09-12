@@ -1,19 +1,19 @@
 import { useState } from "react";
 import recursiveInsertionSort from "../utility/insertion";
 
+type Arrangement = "desc" | "asc" | null;
+type SortingAlgorithm = "insertion" | "selection" | null;
+
 interface InputSectionProps {
   input: string;
   arrangement: "desc" | "asc" | null;
-  sortingAlgorithm: "insertion" | "selection" | null;
+  sortingAlgorithm: SortingAlgorithm;
   setInput: (value: string) => void;
   setArrangement: (value: "desc" | "asc" | null) => void;
-  setSortingAlgorithm: (value: "insertion" | "selection" | null) => void;
+  setSortingAlgorithm: (value: SortingAlgorithm) => void;
   onArrange: () => void;
   error: string | null;
 }
-
-type Arrangement = "desc" | "asc" | null;
-type SortingAlgorithm = "insertion" | "selection" | null;
 
 interface OutputSectionProps {
     steps: React.ReactNode[];
@@ -29,6 +29,14 @@ export default function OpSec() {
 
     // Output section
     const [steps, setSteps] = useState<React.ReactNode[]>([]);
+
+    const sortingStrategies = {
+      insertion: (arr: string[], steps: React.ReactNode[], order: Arrangement) =>
+        recursiveInsertionSort(arr, steps, order, 1),
+
+      selection: (arr: string[], steps: React.ReactNode[], order: Arrangement) =>
+        {}, // Mock function only, will edit this later
+    };
 
     const handleArrange = () => {
       // Validation
@@ -50,15 +58,19 @@ export default function OpSec() {
       // Reset steps
       const newSteps: React.ReactNode[] = [];
 
-      if (sortingAlgorithm === "insertion") {
-        const filteredInput = input
-        .replace(/[^0-9\-,]/g, "")
+      // Sanitize input once
+      const filteredInput = input
+        .replace(/[^0-9A-Za-z\-,]/g, "") // allow digits, letters, minus, comma
         .split(",")
         .filter((s) => s !== "");
-        recursiveInsertionSort(filteredInput, newSteps, arrangement, 1);
+
+      // Run chosen algorithm dynamically
+      const strategy = sortingStrategies[sortingAlgorithm];
+      if (strategy) {
+        strategy(filteredInput, newSteps, arrangement);
       }
 
-      setSteps(newSteps); // <- important!
+      setSteps(newSteps);
     };
 
 
@@ -105,23 +117,35 @@ const InputSection = ({
           onChange={(e) => {
             let value = e.target.value;
 
-            // Allow only digits, commas, and minus signs
-            value = value.replace(/[^0-9\-,]/g, "");
+            // Allow only digits, commas, minus signs, and letters A-Z (case-insensitive)
+            value = value.replace(/[^0-9a-zA-Z\-,]/g, "");
 
-            // Prevent multiple commas in a row
-            value = value.replace(/,{2,}/g, ",");
-
-            // Prevent multiple minus signs and enforce minus only at start of number
             value = value
               .split(",")
               .map((part) => {
-                // Keep only first "-" if at the start
-                if (part.startsWith("-")) {
-                  return "-" + part.slice(1).replace(/-/g, "");
+                let hasMinus = part.startsWith("-");
+                let core = hasMinus ? part.slice(1) : part;
+
+                // If it's numeric, keep it
+                if (/^\d+$/.test(core)) {
+                  return (hasMinus ? "-" : "") + core;
                 }
-                return part.replace(/-/g, "");
+
+                // If it's a single letter, capitalize it
+                if (/^[a-zA-Z]$/.test(core)) {
+                  return (hasMinus ? "-" : "") + core.toUpperCase();
+                }
+
+                // If it's empty, keep empty (so commas remain)
+                if (core === "") return "";
+
+                // Otherwise, invalid → drop
+                return "";
               })
               .join(",");
+
+            // Prevent multiple commas in a row
+            value = value.replace(/,{2,}/g, ",");
 
             setInput(value);
           }}
