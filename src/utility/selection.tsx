@@ -1,6 +1,6 @@
 import React from "react";
 
-type Arrangement = "desc" | "asc" | null;
+type Arrangement = "desc" | "asc";
 
 function getComparableValue(val: string): number {
   if (!isNaN(Number(val))) {

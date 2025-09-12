@@ -2,15 +2,15 @@ import { useState } from "react";
 import recursiveInsertionSort from "../utility/insertion";
 import recursiveSelectionSort from "../utility/selection";
 
-type Arrangement = "desc" | "asc" | null;
-type SortingAlgorithm = "insertion" | "selection" | null;
+type Arrangement = "desc" | "asc";
+type SortingAlgorithm = "insertion" | "selection";
 
 interface InputSectionProps {
   input: string;
-  arrangement: "desc" | "asc" | null;
+  arrangement: Arrangement;
   sortingAlgorithm: SortingAlgorithm;
   setInput: (value: string) => void;
-  setArrangement: (value: "desc" | "asc" | null) => void;
+  setArrangement: (value: Arrangement) => void;
   setSortingAlgorithm: (value: SortingAlgorithm) => void;
   onArrange: () => void;
   error: string | null;
@@ -25,8 +25,8 @@ export default function OpSec() {
 
     // Input section
     const [input, setInput] = useState<string>("");
-    const [arrangement, setArrangement] = useState<Arrangement>(null);
-    const [sortingAlgorithm, setSortingAlgorithm] = useState<SortingAlgorithm>(null);
+    const [arrangement, setArrangement] = useState<Arrangement>("asc");
+    const [sortingAlgorithm, setSortingAlgorithm] = useState<SortingAlgorithm>("insertion");
     const [error, setError] = useState<string | null>(null);
 
     // Output section
@@ -156,17 +156,13 @@ const InputSection = ({
               className={`w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition
                 ${error && !arrangement ? "border-red-500 focus:ring-red-300" : "border-gray-300 focus:ring-blue-600 focus:border-blue-600"}`}
               value={arrangement || ""}
-              onChange={(e) =>
-                setArrangement(
-                  e.target.value === "asc"
-                    ? "asc"
-                    : e.target.value === "desc"
-                    ? "desc"
-                    : null
-                )
-              }
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === "asc" || value === "desc") {
+                  setArrangement(value);
+                }
+              }}
             >
-              <option value="">Select Arrangement</option>
               <option value="asc">Ascending</option>
               <option value="desc">Descending</option>
             </select>
@@ -180,19 +176,15 @@ const InputSection = ({
               className={`w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition
                 ${error && !sortingAlgorithm ? "border-red-500 focus:ring-red-300" : "border-gray-300 focus:ring-blue-600 focus:border-blue-600"}`}
               value={sortingAlgorithm || ""}
-              onChange={(e) =>
-                setSortingAlgorithm(
-                  e.target.value === "insertion"
-                    ? "insertion"
-                    : e.target.value === "selection"
-                    ? "selection"
-                    : null
-                )
-              }
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === "insertion" || value === "selection") {
+                  setSortingAlgorithm(value);
+                }
+              }}
             >
-              <option value="">Select Algorithm</option>
-              <option value="insertion">Insertion</option>
-              <option value="selection">Selection</option>
+              <option value="insertion">Insertion Sort</option>
+              <option value="selection">Selection Sort</option>
             </select>
           </div>
 
