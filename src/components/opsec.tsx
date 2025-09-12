@@ -176,7 +176,7 @@ const InputSection = ({
   error,
 }: InputSectionProps) => {
   return (
-    <div className="px-8">
+    <div className="px-8 mt-16">
       <div className="max-w-4xl mx-auto space-y-4">
 
         <label className="block text-base font-semibold text-gray-700">
@@ -283,7 +283,7 @@ const InputSection = ({
 
 const OutputSection = ({ steps }: OutputSectionProps) => {
   return (
-    <div className="px-8 py-4">
+    <div className="px-8 py-4 mb-16">
         <div className="max-w-4xl mx-auto">
             {steps.length > 0 ? (
                 <>
