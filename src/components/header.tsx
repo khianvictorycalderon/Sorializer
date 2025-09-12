@@ -1,6 +1,6 @@
 export default function Header() {
     return (
-        <div className="px-8 py-4 lg:py-8 mt-16">
+        <div className="px-8 py-4 lg:py-8 mt-8">
             <div className="max-w-4xl mx-auto">
                 <img 
                     className="mx-auto max-w-[100px] h-auto"
