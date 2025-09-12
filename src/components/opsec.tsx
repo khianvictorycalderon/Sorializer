@@ -1,5 +1,6 @@
 import { useState } from "react";
 import recursiveInsertionSort from "../utility/insertion";
+import recursiveSelectionSort from "../utility/selection";
 
 type Arrangement = "desc" | "asc" | null;
 type SortingAlgorithm = "insertion" | "selection" | null;
@@ -35,7 +36,7 @@ export default function OpSec() {
         recursiveInsertionSort(arr, steps, order, 1),
 
       selection: (arr: string[], steps: React.ReactNode[], order: Arrangement) =>
-        {}, // Mock function only, will edit this later
+        recursiveSelectionSort(arr, steps, order, 1),
     };
 
     const handleArrange = () => {
