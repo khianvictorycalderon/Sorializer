@@ -1,4 +1,5 @@
 import ChangeLogs from "./components/changelogs";
+import Footer from "./components/footer";
 import Header from "./components/header";
 import OpSec from "./components/opsec";
 
@@ -20,6 +21,7 @@ export default function App() {
       <Header/>
       <OpSec/>
       <ChangeLogs changelogs={changelogs}/>
+      <Footer/>
     </>
   )
 }
