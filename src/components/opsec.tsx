@@ -18,6 +18,7 @@ interface InputSectionProps {
 
 interface OutputSectionProps {
     steps: React.ReactNode[];
+    onClear: () => void; // added
 }
 
 export default function OpSec() {
@@ -74,7 +75,10 @@ export default function OpSec() {
       setSteps(newSteps);
     };
 
-
+    const handleClearOutput = () => {
+        setSteps([]);
+    };
+    
     return (
         <>
           <InputSection
@@ -87,7 +91,7 @@ export default function OpSec() {
               onArrange={handleArrange}
               error={error}
           />
-          <OutputSection steps={steps} />
+          <OutputSection steps={steps} onClear={handleClearOutput} />
         </>
     );
 }
@@ -113,7 +117,7 @@ const InputSection = ({
           type="text"
           className={`w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition
             ${error && !input.trim() ? "border-red-500 focus:ring-red-300" : "border-gray-300 focus:ring-blue-600 focus:border-blue-600"}`}
-          placeholder="7,1,9,8,10,2..."
+          placeholder="7,1,A,9,8,C,2,B..."
           value={input}
           onChange={(e) => {
             let value = e.target.value;
@@ -210,27 +214,31 @@ const InputSection = ({
   );
 };
 
-const OutputSection = ({ steps }: OutputSectionProps) => {
+const OutputSection = ({ steps, onClear }: OutputSectionProps) => {
   return (
-    <div className="px-8 py-4 mb-16">
+    <div className="px-8 py-4">
         <div className="max-w-4xl mx-auto">
-            {steps.length > 0 ? (
-                <>
-                    {steps.map((item, index) => (
-                        <div 
-                            className="bg-neutral-200 p-2 my-2 rounded-md overflow-x-auto" 
-                            key={`${item}-${index}`}
-                        >
-                            {index + 1}.{")"} {item}
-                        </div>
-                    ))}
-                </>
-            ) : (
-                <span>
-                    Output here...
-                </span>
-            )}
+          {steps.length > 0 && (
+            <>
+              {steps.map((item, index) => (
+                <div 
+                    className="bg-neutral-200 p-2 my-2 rounded-md overflow-x-auto" 
+                    key={`${item}-${index}`}
+                >
+                    {index + 1}.{")"} {item}
+                </div>
+              ))}
+              <div className="mt-4">
+                <button
+                  onClick={onClear}
+                  className="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg shadow hover:bg-red-400 transition w-full cursor-pointer"
+                >
+                  Clear Output
+                </button>
+              </div>
+            </>
+          )}
         </div>
     </div>
   );
-};
+}

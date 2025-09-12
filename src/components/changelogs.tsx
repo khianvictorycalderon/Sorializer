@@ -4,7 +4,7 @@ interface ChangeLogsProps {
 
 export default function ChangeLogs({ changelogs }: ChangeLogsProps) {
     return (
-        <div className="px-8 py-4 lg:py-8">
+        <div className="px-8 mt-4">
             <div className="max-w-4xl mx-auto">
                 <h1 className="text-2xl font-semibold mb-4">Changelogs:</h1>
                 {changelogs.map(([version, logs], index) => (
