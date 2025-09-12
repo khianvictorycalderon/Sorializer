@@ -15,7 +15,7 @@ function getComparableValue(val: string): number {
   return Number.MAX_SAFE_INTEGER;
 }
 
-function buildStepNode(array: string[], separatorIndex: number) {
+function buildStepNode(array: string[], separatorIndex: number, movedIndex: number | null = null) {
   const sorted = array.slice(0, separatorIndex + 1);
   const unsorted = array.slice(separatorIndex + 1);
 
@@ -24,7 +24,12 @@ function buildStepNode(array: string[], separatorIndex: number) {
       {/* Sorted portion */}
       <span className="inline-flex gap-4">
         {sorted.map((val, idx) => (
-          <span key={idx}>{val}</span>
+          <span
+            key={idx}
+            className={movedIndex === idx ? "text-blue-600 font-extrabold" : ""}
+          >
+            {val}
+          </span>
         ))}
       </span>
 
@@ -34,7 +39,12 @@ function buildStepNode(array: string[], separatorIndex: number) {
       {/* Unsorted portion */}
       <span className="inline-flex gap-4 ml-2">
         {unsorted.map((val, idx) => (
-          <span key={idx}>{val}</span>
+          <span
+            key={idx}
+            className={movedIndex === idx + separatorIndex + 1 ? "text-blue-600 font-bold" : ""}
+          >
+            {val}
+          </span>
         ))}
       </span>
     </span>
@@ -120,23 +130,26 @@ export default function recursiveInsertionSort(
   }
 
   if (shouldSwap) {
-    // Swap elements behind the separator, but keep separator at i
+    // Track the moved element (the one being inserted)
+    const movedValIndex = j; // after swap, the moved element is now at index j
+
+    // Swap elements
     [array[j], array[j + 1]] = [array[j + 1], array[j]];
 
     const text = buildStepText(array, i);
     if (lastText !== text) {
-      steps.push(buildStepNode(array, i));
-      lastText = text;
+        steps.push(buildStepNode(array, i, movedValIndex)); // highlight the moved element
+        lastText = text;
     }
 
     recursiveInsertionSort(array, steps, order, stepIndex + 1, i, j - 1, lastText);
-  } else {
-    // No swap needed, move to next i
+    } else {
     const text = buildStepText(array, i);
     if (lastText !== text) {
-      steps.push(buildStepNode(array, i));
-      lastText = text;
+        steps.push(buildStepNode(array, i)); // no element moved
+        lastText = text;
     }
+
     recursiveInsertionSort(array, steps, order, stepIndex + 1, i + 1, null, lastText);
-  }
+    }
 }
