@@ -117,34 +117,24 @@ const InputSection = ({
           onChange={(e) => {
             let value = e.target.value;
 
-            // Allow only digits, commas, minus signs, and letters A-Z (case-insensitive)
-            value = value.replace(/[^0-9a-zA-Z\-,]/g, "");
+            // Step 1: Capitalizes letters
+            value = value.replace(/[a-z]/g, (match) => match.toUpperCase());
 
-            value = value
-              .split(",")
-              .map((part) => {
-                let hasMinus = part.startsWith("-");
-                let core = hasMinus ? part.slice(1) : part;
+            // Step 2: Remove letters immediately followed by letters or numbers
+            value = value.replace(/([A-Z])(?=[A-Z0-9])/g, "");
 
-                // If it's numeric, keep it
-                if (/^\d+$/.test(core)) {
-                  return (hasMinus ? "-" : "") + core;
-                }
+            // Step 3: Remove numbers immediately followed by letters
+            value = value.replace(/(\d)(?=[A-Z])/g, "");
 
-                // If it's a single letter, capitalize it
-                if (/^[a-zA-Z]$/.test(core)) {
-                  return (hasMinus ? "-" : "") + core.toUpperCase();
-                }
+            // Step 4: Remove minus signs not at start of number
+            // Also compress consecutive minus signs
+            value = value.replace(/(?<!^|,)-+/g, ""); // remove minus not at start or after comma
+            value = value.replace(/-{2,}/g, "-");      // compress multiple minus
 
-                // If it's empty, keep empty (so commas remain)
-                if (core === "") return "";
+            // Step 5: Prevent invalid characters (keep digits, letters, commas, minus)
+            value = value.replace(/[^0-9A-Z\-,]/g, "");
 
-                // Otherwise, invalid → drop
-                return "";
-              })
-              .join(",");
-
-            // Prevent multiple commas in a row
+            // Step 6: Prevent double commas
             value = value.replace(/,{2,}/g, ",");
 
             setInput(value);
