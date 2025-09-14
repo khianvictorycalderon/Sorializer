@@ -1,9 +1,10 @@
 import { useState } from "react";
 import recursiveInsertionSort from "../utility/insertion";
 import recursiveSelectionSort from "../utility/selection";
+import recursiveBubbleSort from "../utility/bubble";
 
 type Arrangement = "desc" | "asc";
-type SortingAlgorithm = "insertion" | "selection";
+type SortingAlgorithm = "insertion" | "selection" | "bubble";
 
 interface InputSectionProps {
   input: string;
@@ -38,6 +39,9 @@ export default function OpSec() {
 
       selection: (arr: string[], steps: React.ReactNode[], order: Arrangement) =>
         recursiveSelectionSort(arr, steps, order, 1),
+
+      bubble: (arr: string[], steps: React.ReactNode[], order: Arrangement) =>
+        recursiveBubbleSort(arr, steps, order, 1),
     };
 
     const handleArrange = () => {
@@ -178,13 +182,14 @@ const InputSection = ({
               value={sortingAlgorithm || ""}
               onChange={(e) => {
                 const value = e.target.value;
-                if (value === "insertion" || value === "selection") {
+                if (value === "insertion" || value === "selection" || value === "bubble") {
                   setSortingAlgorithm(value);
                 }
               }}
             >
               <option value="insertion">Insertion Sort</option>
               <option value="selection">Selection Sort</option>
+              <option value="bubble">Bubble Sort</option>
             </select>
           </div>
 
