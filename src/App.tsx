@@ -13,6 +13,13 @@ export default function App() {
         "The very first version of this project.",
         "Can only process insertion and selection algorithm only."
       ]
+    ],
+    [
+      "1.1.0",
+      [
+        "Released in September 14, 2025.",
+        "Added bubble sorting algorithm."
+      ]
     ]
   ]
 
